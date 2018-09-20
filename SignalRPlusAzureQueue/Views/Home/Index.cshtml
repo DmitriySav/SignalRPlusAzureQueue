@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<div id="container">
+
+</div>
+<script type="text/javascript">
+        $(function () {
+            // Declare a proxy to reference the hub.
+            var chat = $.connection.messageHub;
+            // Create a function that the hub can call to broadcast messages.
+            chat.client.broadcastMessage = function (message) {
+                // Html encode display name and message.
+                var encodedMsg = $('<div />').text(message).html();
+                // Add the message to the page.
+                $('#container').append('<p>'+ encodedMsg + '</p>');
+            };
+            // Start the connection.
+            $.connection.hub.start().done(function () {
+                   // Call the Send method on the hub.
+                    chat.server.send();
+                    // Clear text box and reset focus for next comment.
+            });
+            
+        });
+</script>
