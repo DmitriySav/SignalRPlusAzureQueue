@@ -9,10 +9,21 @@ namespace SignalRPlusAzureQueue.Readers
     {
         private string _queueName;
         private CloudQueue _queue;
-        public QueueReader(string queueName)
+        private static QueueReader Instance;
+
+
+        private QueueReader(string queueName)
         {
             _queueName = queueName;
         }
+
+        public static QueueReader GetInstane(string queueName)
+        {
+            if(Instance == null)
+            Instance = new QueueReader(queueName);
+            return Instance;
+        }
+
         public void ConnectToQueue()
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(

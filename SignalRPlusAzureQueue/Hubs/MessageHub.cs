@@ -14,7 +14,7 @@ namespace SignalRPlusAzureQueue.Hubs
         public string CurrentMessage;
         private readonly object _GetMessageLock = new object();
         private Timer _timer;
-        private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(5000);
+        private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(2000);
 
         private MessageGetter(IQueueReader queueReader, Hub context)
         {
@@ -32,7 +32,6 @@ namespace SignalRPlusAzureQueue.Hubs
                 {
                     CurrentMessage = _reader.GetMessage();
                     _context.Clients.All.broadcastMessage(CurrentMessage);
-
                 }
             }
         }
@@ -45,20 +44,11 @@ namespace SignalRPlusAzureQueue.Hubs
         }
     }
 
-    public class QueueReaderFactory : IReaderFactory
-    {
-        public IQueueReader CreateQueueReader(string name)
-        {
-            return new QueueReader(name);
-        }
-    }
-
-
     public class MessageHub : Hub
     {
         public void OnConnection()
         {
-            QueueReader queueReader = new QueueReader("myqueue");
+            var queueReader = QueueReader.GetInstane("myqueue");
             MessageGetter.GetInstance(queueReader, this);
         }
     }
