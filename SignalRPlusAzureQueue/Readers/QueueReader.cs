@@ -1,5 +1,4 @@
-﻿using Microsoft.Azure; // Namespace for CloudConfigurationManager
-using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
+﻿using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
 using Microsoft.WindowsAzure.Storage.Queue;
 using SignalRPlusAzureQueue.Interfaces;
 
@@ -7,29 +6,29 @@ namespace SignalRPlusAzureQueue.Readers
 {
     public class QueueReader:IQueueReader
     {
-        private string _queueName;
+        private IAzureStorageConfig _config;       
         private CloudQueue _queue;
-        private static QueueReader Instance;
+        private static QueueReader _instance;
 
 
-        private QueueReader(string queueName)
+        private QueueReader(IAzureStorageConfig azureConfig)
         {
-            _queueName = queueName;
+            _config = azureConfig;
+            
         }
 
-        public static QueueReader GetInstane(string queueName)
+        public static QueueReader GetInstane(IAzureStorageConfig azureConfig)
         {
-            if(Instance == null)
-            Instance = new QueueReader(queueName);
-            return Instance;
+            if(_instance == null)
+            _instance = new QueueReader(azureConfig);
+            return _instance;
         }
 
         public void ConnectToQueue()
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
-               CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_config.GetconnectionString());
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
-            _queue = queueClient.GetQueueReference(_queueName);
+            _queue = queueClient.GetQueueReference(_config.StorageItemReference());
         }
         public int QueueCount()
         {
