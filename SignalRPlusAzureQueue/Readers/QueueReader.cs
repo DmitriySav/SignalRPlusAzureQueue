@@ -1,10 +1,11 @@
 ﻿using Microsoft.Azure; // Namespace for CloudConfigurationManager
 using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
 using Microsoft.WindowsAzure.Storage.Queue;
+using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Readers
 {
-    public class QueueReader
+    public class QueueReader:IQueueReader
     {
         private string _queueName;
         private CloudQueue _queue;
