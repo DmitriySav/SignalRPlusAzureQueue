@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Infrastructure;
 using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Sevices

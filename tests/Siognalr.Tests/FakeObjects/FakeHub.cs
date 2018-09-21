@@ -1,8 +1,8 @@
 ﻿using System;
 
-public class Class1
+public class FakeHub
 {
-	public Class1()
+	public FakeHub()
 	{
 	}
 }

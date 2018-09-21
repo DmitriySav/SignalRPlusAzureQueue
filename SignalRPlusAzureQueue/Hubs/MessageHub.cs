@@ -11,11 +11,15 @@ namespace SignalRPlusAzureQueue.Hubs
 {
     public class MessageHub : Hub
     {
+
+
         public void OnConnection()
         {
 
             var queueReader = QueueReader.GetInstane(new AzureQueueConfig());
             MessageGetter.GetInstance(queueReader, this);
         }
+
+       
     }
 }
