@@ -10,6 +10,7 @@
         $(function () {
             // Declare a proxy to reference the hub.
             var messager = $.connection.messageHub;
+           
             // Create a function that the hub can call to broadcast messages.
             messager.client.broadcastMessage = function (message) {
                 // Html encode display name and message.
@@ -18,9 +19,12 @@
                 $('#container').append('<p>'+ encodedMsg + '</p>');
             };
             // Start the connection.
+            messager.logging= true;
             $.connection.hub.start().done(function () {
                    // Call the Send method on the hub.
-                messager.server.onConnection();
+                messager.server.sendtwo();
+                messager.server.send();
+                
                
                 // Clear text box and reset focus for next comment.
             });

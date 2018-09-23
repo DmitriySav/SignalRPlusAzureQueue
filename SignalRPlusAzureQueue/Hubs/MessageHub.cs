@@ -5,21 +5,33 @@ using SignalRPlusAzureQueue.Config;
 using SignalRPlusAzureQueue.Interfaces;
 using SignalRPlusAzureQueue.Readers;
 using SignalRPlusAzureQueue.Sevices;
-using Timer = System.Threading.Timer;
+
 
 namespace SignalRPlusAzureQueue.Hubs
 {
     public class MessageHub : Hub
     {
 
+        private readonly IMessageService _messageService;
 
-        public void OnConnection()
+        public MessageHub(IMessageService messageService)
         {
-
-            var queueReader = QueueReader.GetInstane(new AzureQueueConfig());
-            MessageGetter.GetInstance(queueReader, this);
+            if (_messageService == null)
+                { throw new ArgumentNullException("messageService"); }
+            _messageService = messageService;
         }
 
-       
+        public void Sendtwo()
+        {
+            Clients.All.broadcastMessage("hello");
+        }
+
+        public void Send()
+        {
+            _messageService.Start();
+        }
+
+
+
     }
 }

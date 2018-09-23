@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace SignalRPlusAzureQueue.Interfaces
 {
-    public interface IReaderFactory
+    public interface IMessageService
     {
-        IQueueReader CreateQueueReader(string name);
+        void BroadcastSending(string message);
+        void Start();
+        
     }
 }
