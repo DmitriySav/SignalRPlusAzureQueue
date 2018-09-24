@@ -10,8 +10,7 @@ namespace SignalRPlusAzureQueue.Interfaces
     public interface IQueueReader
     {
         event ReaderEventHandler OnGetMessage;
-        void ConnectToQueue();
-        int QueueCount();
+        int Count();
         void GetMessage();
     }
 }

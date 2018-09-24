@@ -20,7 +20,6 @@ namespace SignalRPlusAzureQueue.Sevices
         {
             _reader = queueReader;
             _context = context;
-            _reader.ConnectToQueue();
             _reader.OnGetMessage += BroadcastSending;
         }
 
@@ -37,7 +36,7 @@ namespace SignalRPlusAzureQueue.Sevices
 
         private void GetMessage(object state)
         {
-            if (_reader.QueueCount() > 0)
+            if (_reader.Count() > 0)
             {
                 _reader.GetMessage();
             }

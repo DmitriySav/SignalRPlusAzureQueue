@@ -185,11 +185,13 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Hubs\MessageHub.cs" />
+    <Compile Include="Interfaces\IAzureQueueStorageService.cs" />
     <Compile Include="Interfaces\IAzureStorageConfig.cs" />
     <Compile Include="Interfaces\IMessageService.cs" />
     <Compile Include="Interfaces\IQueueReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Readers\QueueReader.cs" />
+    <Compile Include="Sevices\AzureQueueStorageService.cs" />
     <Compile Include="Sevices\MessageGetter.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>

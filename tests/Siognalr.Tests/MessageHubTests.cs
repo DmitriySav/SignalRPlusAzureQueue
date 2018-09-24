@@ -15,13 +15,13 @@ namespace Siognalr.Tests
         [SetUp]
         public void SetUp()
         {
-            _messageHub = new MessageHub();
+            
         }
 
         [Test]
         public void InstantiationTest()
         {
-            _messageHub.OnConnection();
+          
         }
 
         
