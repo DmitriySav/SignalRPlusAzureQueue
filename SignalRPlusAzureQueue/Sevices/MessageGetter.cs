@@ -6,43 +6,49 @@ using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Sevices
 {
-    public class MessageGetter
+    public class MessageGetter:IMessageService
     {
 
-        private Hub _context;
-        private Timer _timer;
+        public IHubContext _context { get; set; }
+        public Timer _timer;
         private IQueueReader _reader;
-        public string CurrentMessage;
-        public static MessageGetter Instance;
-        private readonly object _getMessageLock = new object();
+        //public static MessageGetter Instance;
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(2000);
 
 
-        private MessageGetter(IQueueReader queueReader, Hub context)
+        public MessageGetter(IQueueReader queueReader, IHubContext context)
         {
             _reader = queueReader;
             _context = context;
             _reader.ConnectToQueue();
+            _reader.OnGetMessage += BroadcastSending;
+        }
+
+       
+        public void Start()
+        {
+            if (_timer != null)
+            {
+                return;
+            }
+
             _timer = new Timer(GetMessage, null, _updateInterval, _updateInterval);
         }
 
         private void GetMessage(object state)
         {
-            lock (_getMessageLock)
+            if (_reader.QueueCount() > 0)
             {
-                if (_reader.QueueCount() > 0)
-                {
-                    CurrentMessage = _reader.GetMessage();
-                    _context.Clients.All.broadcastMessage(CurrentMessage);
-                }
+                _reader.GetMessage();
             }
+
         }
 
-        public static MessageGetter GetInstance(IQueueReader queueReader, Hub context)
+        private void BroadcastSending(string message)
         {
-            if (Instance == null)
-                Instance = new MessageGetter(queueReader, context);
-            return Instance;
+            _context.Clients.All.broadcastMessage(message);
         }
+
+        
     }
 }

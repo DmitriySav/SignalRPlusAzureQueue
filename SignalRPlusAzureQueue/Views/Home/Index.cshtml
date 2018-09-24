@@ -21,7 +21,8 @@
             $.connection.hub.start().done(function () {
                    // Call the Send method on the hub.
                 messager.server.onConnection();
-               
+                messager.server.start();
+
                 // Clear text box and reset focus for next comment.
             });
             

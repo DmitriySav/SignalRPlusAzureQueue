@@ -8,25 +8,25 @@ namespace SignalRPlusAzureQueue.Readers
     {
         private IAzureStorageConfig _config;       
         private CloudQueue _queue;
-        private static QueueReader _instance;
 
 
-        private QueueReader(IAzureStorageConfig azureConfig)
+        public QueueReader(IAzureStorageConfig azureConfig)
         {
             _config = azureConfig;
             
         }
 
-        public static QueueReader GetInstane(IAzureStorageConfig azureConfig)
+        public event ReaderEventHandler OnGetMessage;
+
+        event ReaderEventHandler IQueueReader.OnGetMessage
         {
-            if(_instance == null)
-            _instance = new QueueReader(azureConfig);
-            return _instance;
+            add { if (OnGetMessage == null) { OnGetMessage += value; } }
+            remove { OnGetMessage -= value; }
         }
 
         public void ConnectToQueue()
         {
-            CloudStorageAccount storageAccount = CloudStorageAccount.Parse(_config.GetconnectionString());
+            CloudStorageAccount storageAccount = _config.GetAccount();
             CloudQueueClient queueClient = storageAccount.CreateCloudQueueClient();
             _queue = queueClient.GetQueueReference(_config.StorageItemReference());
         }
@@ -36,11 +36,11 @@ namespace SignalRPlusAzureQueue.Readers
             var count = _queue.ApproximateMessageCount;
             return count.GetValueOrDefault();
         }
-        public string GetMessage()
+        public void GetMessage()
         {
             CloudQueueMessage queueMessage = _queue.GetMessage();
             _queue.DeleteMessage(queueMessage);
-            return queueMessage.AsString;
+            OnGetMessage?.Invoke(queueMessage.AsString);
         }
         
     }

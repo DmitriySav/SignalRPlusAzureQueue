@@ -1,7 +1,9 @@
-﻿using NUnit.Framework;
+﻿using Microsoft.AspNet.SignalR;
+using NUnit.Framework;
 using Moq;
 using SignalRPlusAzureQueue.Hubs;
 using SignalRPlusAzureQueue.Interfaces;
+using SignalRPlusAzureQueue.Sevices;
 
 namespace Siognalr.Tests
 {
@@ -22,10 +24,6 @@ namespace Siognalr.Tests
             _messageHub.OnConnection();
         }
 
-        [Test]
-        public void MessageGetterTest()
-        {
-            IQueueReader FakeReader = Mock.Of<IQueueReader>();
-        }
+        
     }
 }

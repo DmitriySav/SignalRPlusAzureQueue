@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace SignalRPlusAzureQueue.Interfaces
 {
+    public delegate void ReaderEventHandler(string message);
     public interface IQueueReader
     {
+        event ReaderEventHandler OnGetMessage;
         void ConnectToQueue();
         int QueueCount();
-        string GetMessage();
+        void GetMessage();
     }
 }
+
