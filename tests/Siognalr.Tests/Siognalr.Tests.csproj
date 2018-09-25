@@ -88,7 +88,6 @@
     <Compile Include="MessageGetterTests.cs" />
     <Compile Include="MessageHubTests.cs" />
     <Compile Include="QueueReaderTests.cs" />
-    <Compile Include="UnitTest1.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

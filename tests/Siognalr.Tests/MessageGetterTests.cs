@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -23,23 +23,27 @@ namespace Siognalr.Tests
              _mockReader = new Mock<IQueueReader>();
             _mockHubContext = new Mock<IHubContext>();
         }
-        [Test]
-        public void MessageGetter_GetMessageRun()
-        {
-            bool messageEvent = false;
 
+        //[NUnit.Framework.Ignore("Test not verify method of mock object")]
+        [Test]
+        public void Start_WhenCalled_InvokeMockObjectMethod()
+        {
+           //Arrange
             _messageService = new MessageGetter(_mockReader.Object , _mockHubContext.Object);
-            _mockReader.Setup(x => x.Count()).Returns(1);
+            _mockReader.SetupSequence(x => x.Count())
+                .Returns(1)
+                .Returns(0);
             _mockReader.Setup(mock => mock.GetMessage());
             //act
             _messageService.Start();
 
-
+            //Assert
+            _mockReader.Verify(mock=>mock.GetMessage(), Times.AtLeastOnce());
             
         }
 
         [Test]
-        public void MessageGetter_Start_TimerIsNotNull()
+        public void Start_WhenCalled_TimerIsNotNull()
         {
             //arrange
             _messageService = new MessageGetter(_mockReader.Object, _mockHubContext.Object);
