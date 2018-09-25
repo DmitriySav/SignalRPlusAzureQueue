@@ -1,10 +1,6 @@
-﻿using System;
-using Microsoft.AspNet.SignalR;
-using Microsoft.Azure;
-using SignalRPlusAzureQueue.Config;
+﻿using Microsoft.AspNet.SignalR;
 using SignalRPlusAzureQueue.Interfaces;
-using SignalRPlusAzureQueue.Readers;
-using SignalRPlusAzureQueue.Sevices;
+
 
 
 namespace SignalRPlusAzureQueue.Hubs

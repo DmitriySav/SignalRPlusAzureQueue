@@ -187,6 +187,7 @@
     <Compile Include="Hubs\MessageHub.cs" />
     <Compile Include="Interfaces\IAzureQueueStorageService.cs" />
     <Compile Include="Interfaces\IAzureStorageConfig.cs" />
+    <Compile Include="Interfaces\IMessageHub.cs" />
     <Compile Include="Interfaces\IMessageService.cs" />
     <Compile Include="Interfaces\IQueueReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

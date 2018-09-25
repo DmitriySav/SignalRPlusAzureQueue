@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading;
 using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Infrastructure;
 using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Sevices
@@ -12,7 +11,6 @@ namespace SignalRPlusAzureQueue.Sevices
         public IHubContext _context { get; set; }
         public Timer _timer;
         private IQueueReader _reader;
-        //public static MessageGetter Instance;
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(2000);
 
 
@@ -31,10 +29,10 @@ namespace SignalRPlusAzureQueue.Sevices
                 return;
             }
 
-            _timer = new Timer(GetMessage, null, _updateInterval, _updateInterval);
+            _timer = new Timer(BeginGetMessages, null, _updateInterval, _updateInterval);
         }
 
-        private void GetMessage(object state)
+        private void BeginGetMessages(object state)
         {
             if (_reader.Count() > 0)
             {
