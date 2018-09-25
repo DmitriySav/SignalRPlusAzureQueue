@@ -18,7 +18,6 @@ namespace SignalRPlusAzureQueue
 
             var resolver = new AutofacDependencyResolver(container);
 
-            GlobalHost.DependencyResolver = new AutofacDependencyResolver(container);
 
             app.UseAutofacMiddleware(container);
             app.MapSignalR(new HubConfiguration
@@ -27,7 +26,6 @@ namespace SignalRPlusAzureQueue
             });
 
             AddSignalRInjection(container, resolver);
-            app.MapSignalR();
         }
 
         private void AddSignalRInjection(IContainer container, IDependencyResolver resolver)
