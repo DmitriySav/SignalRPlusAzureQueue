@@ -23,6 +23,9 @@ namespace SignalRPlusAzureQueue.DependencyConteiners
             builder.RegisterHubs(Assembly.GetExecutingAssembly())
                 .PropertiesAutowired();
 
+            builder.RegisterType<UserService>()
+                .As<IUserService>();
+
             builder.RegisterType<AzureStorageConfig>()
                 .As<IAzureStorageConfig>();
 

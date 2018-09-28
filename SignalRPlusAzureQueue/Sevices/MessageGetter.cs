@@ -8,8 +8,8 @@ namespace SignalRPlusAzureQueue.Sevices
     public class MessageGetter:IMessageService
     {
 
-        public IHubContext _context { get; set; }
-        public Timer _timer;
+        private IHubContext Context { get; set; }
+        public Timer timer;
         private IQueueReader _reader;
         private readonly TimeSpan _updateInterval = TimeSpan.FromMilliseconds(2000);
 
@@ -17,19 +17,19 @@ namespace SignalRPlusAzureQueue.Sevices
         public MessageGetter(IQueueReader queueReader, IHubContext context)
         {
             _reader = queueReader;
-            _context = context;
+            Context = context;
             _reader.OnGetMessage += BroadcastSending;
         }
 
        
         public void Start()
         {
-            if (_timer != null)
+            if (timer != null)
             {
                 return;
             }
 
-            _timer = new Timer(BeginGetMessages, null, _updateInterval, _updateInterval);
+            timer = new Timer(BeginGetMessages, null, _updateInterval, _updateInterval);
         }
 
         private void BeginGetMessages(object state)
@@ -43,7 +43,7 @@ namespace SignalRPlusAzureQueue.Sevices
 
         private void BroadcastSending(string message)
         {
-            _context.Clients.All.broadcastMessage(message);
+            Context.Clients.All.broadcastMessage(message);
         }
 
         

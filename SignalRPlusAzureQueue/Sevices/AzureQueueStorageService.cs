@@ -24,9 +24,16 @@ namespace SignalRPlusAzureQueue.Sevices
 
         public int QueueCount()
         {
+            if (_queue.Exists())
+            {
             _queue.FetchAttributes();
             var count = _queue.ApproximateMessageCount;
             return count.GetValueOrDefault();
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public string GetMessage()

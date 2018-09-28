@@ -1,7 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using NUnit.Framework;
 using SignalRPlusAzureQueue.Interfaces;
@@ -17,7 +14,7 @@ namespace Siognalr.Tests
     public class QueueReaderTests
     {
         private Mock<IAzureQueueStorageService> _queueService;
-        private QueueReader queueReader;
+        private QueueReader _queueReader;
         public QueueReaderTests()
         {
             _queueService = new Mock<IAzureQueueStorageService>();
@@ -28,12 +25,12 @@ namespace Siognalr.Tests
         {
             //arrange
             _queueService.Setup(x => x.GetMessage()).Returns("Message");
-            queueReader = new QueueReader(_queueService.Object);
+            _queueReader = new QueueReader(_queueService.Object);
             bool messageEvent = false;
-            queueReader.OnGetMessage += (e) => messageEvent = true;
+            _queueReader.OnGetMessage += (e) => messageEvent = true;
 
             //act
-            queueReader.GetMessage();
+            _queueReader.GetMessage();
 
             //assert
             Assert.IsTrue(messageEvent);
@@ -44,13 +41,13 @@ namespace Siognalr.Tests
         {
             //arrange
             _queueService.Setup(x => x.GetMessage()).Returns("Hello");
-            queueReader = new QueueReader(_queueService.Object);
+            _queueReader = new QueueReader(_queueService.Object);
             string message = string.Empty;
 
-            queueReader.OnGetMessage += (s) => message = s;
+            _queueReader.OnGetMessage += (s) => message = s;
             
             //act
-            queueReader.GetMessage();
+            _queueReader.GetMessage();
 
             //assert
             Assert.AreEqual("Hello", message);
@@ -61,10 +58,10 @@ namespace Siognalr.Tests
         {
             //arrange
             _queueService.Setup(x => x.QueueCount()).Returns(1);
-            queueReader = new QueueReader(_queueService.Object);
+            _queueReader = new QueueReader(_queueService.Object);
 
             //act
-            int num = queueReader.Count();
+            int num = _queueReader.Count();
 
             //assert
             Assert.AreEqual(num,1);

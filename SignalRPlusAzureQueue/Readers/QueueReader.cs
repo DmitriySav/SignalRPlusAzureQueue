@@ -1,6 +1,4 @@
-﻿using Microsoft.WindowsAzure.Storage; // Namespace for CloudStorageAccount
-using Microsoft.WindowsAzure.Storage.Queue;
-using SignalRPlusAzureQueue.Interfaces;
+﻿using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Readers
 {

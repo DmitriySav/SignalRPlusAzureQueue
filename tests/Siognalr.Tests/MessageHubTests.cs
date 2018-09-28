@@ -1,10 +1,9 @@
-﻿using Microsoft.AspNet.SignalR;
-using Microsoft.AspNet.SignalR.Hubs;
+﻿using Microsoft.AspNet.SignalR.Hubs;
 using NUnit.Framework;
 using Moq;
 using SignalRPlusAzureQueue.Hubs;
 using SignalRPlusAzureQueue.Interfaces;
-using SignalRPlusAzureQueue.Sevices;
+using Siognalr.Tests.Interfaces;
 
 namespace Siognalr.Tests
 {
@@ -17,12 +16,7 @@ namespace Siognalr.Tests
         public MessageHubTests()
         {
             _messageServiceMock = new Mock<IMessageService>();
-        }
-
-        public interface IClientContract
-        {
-            void broadcastMessage(string name);
-        }
+        }      
 
         [Test]
         public void HubMockingTest()
@@ -30,16 +24,16 @@ namespace Siognalr.Tests
             //arrange 
             _messageHub = new MessageHub(_messageServiceMock.Object);
             var mockClient = new Mock<IHubCallerConnectionContext<dynamic>>();
-            var all = new Mock<IClientContract>();
+            var clientContractMock = new Mock<IClientContract>();
             _messageHub.Clients = mockClient.Object;
-            all.Setup(m => m.broadcastMessage(It.IsAny<string>())).Verifiable();
-            mockClient.Setup(m => m.All).Returns(all.Object);
+            clientContractMock.Setup(m => m.Message(It.IsAny<string>())).Verifiable();
+            mockClient.Setup(m => m.Caller).Returns(clientContractMock.Object);
 
             //act
-            _messageHub.OnConnection();
+            _messageHub.OnConnected();
 
             //Assert
-            all.VerifyAll();
+            clientContractMock.VerifyAll();
 
         }
 
