@@ -21,6 +21,12 @@ namespace SignalRPlusAzureQueue.Sevices
             });
         }
 
+        /// <summary>
+        /// Method check user's credentials
+        /// </summary>
+        /// <param name="userName"> User name string</param>
+        /// <param name="password"> User's password</param>
+        /// <returns>bool value, true if user is authenticated</returns>
         public bool IsAuthenticate(string userName, string password)
         {
             var user = Users.SingleOrDefault(x => x.UserName == userName);
@@ -33,6 +39,10 @@ namespace SignalRPlusAzureQueue.Sevices
             
         }
 
+        /// <summary>
+        /// Create new user with hashing password
+        /// </summary>
+        /// <param name="userDTO">user DTO model</param>
         public void Create(UserDTO userDTO)
         {
             byte[] passwordHash, passwordSalt;
@@ -45,6 +55,13 @@ namespace SignalRPlusAzureQueue.Sevices
             };
             Users.Add(user);
         }
+
+        /// <summary>
+        /// Hashing password
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="passwordHash"></param>
+        /// <param name="passwordSalt"></param>
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
@@ -56,7 +73,13 @@ namespace SignalRPlusAzureQueue.Sevices
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
-
+        /// <summary>
+        /// Verify passing password and stored
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="storedHash"></param>
+        /// <param name="storedSalt"></param>
+        /// <returns></returns>
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (password == null) throw new ArgumentNullException("password");

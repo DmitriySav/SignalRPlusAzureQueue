@@ -15,7 +15,10 @@ namespace SignalRPlusAzureQueue.Hubs
         {
             _messageService = messageService;
         }
-
+        /// <summary>
+        /// Method invoke on signalr client connection and assign user to group "authenticated or anonymous"
+        /// </summary>
+        /// <returns></returns>
         public override Task OnConnected()
         {
             AssignToSecurityGroup();
@@ -31,29 +34,9 @@ namespace SignalRPlusAzureQueue.Hubs
                 Groups.Add(Context.ConnectionId, "anonymous");
         }
 
-        public void OnConnection()
-        {
-            if (Context.User.Identity.IsAuthenticated)
-            {
-                Clients.Caller.Message("authenticated");
-            }
-            else
-            {
-                Clients.Caller.Message("anonymous");
-            }
-
-
-        }
-
-        [Authorize]
-        public void OnAuthorize()
-        {
-            Clients.Caller.Message("Authorize");
-        }
-
         public void Start()
         {
-            // _messageService.Start();
+             _messageService.Start();
 
         }
 

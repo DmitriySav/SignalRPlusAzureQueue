@@ -14,7 +14,9 @@ namespace SignalRPlusAzureQueue.Sevices
             _azureStorageConfig = azureStorageConfig;
 
         }
-
+        /// <summary>
+        /// Connect to Azure Cloud Storage Account and get queue
+        /// </summary>
         public void ConnectedToAccount()
         {
             CloudStorageAccount storageAccount = _azureStorageConfig.GetAccount();
@@ -22,20 +24,22 @@ namespace SignalRPlusAzureQueue.Sevices
             _queue = queueClient.GetQueueReference(_azureStorageConfig.StorageItemReference());
         }
 
+        /// <summary>
+        /// Count number of items in queue
+        /// </summary>
+        /// <returns>return number of items</returns>
+        ///  /// <exception cref="Microsoft.WindowsAzure.Storage.StorageException">Thrown when queue not connected and cannot 
+        /// fetches the queue's attributes.</exception>
         public int QueueCount()
-        {
-            if (_queue.Exists())
-            {
+        {           
             _queue.FetchAttributes();
             var count = _queue.ApproximateMessageCount;
-            return count.GetValueOrDefault();
-            }
-            else
-            {
-                return 0;
-            }
+            return count.GetValueOrDefault();           
         }
-
+        /// <summary>
+        /// Get last message from queue
+        /// </summary>
+        /// <returns>string message</returns>
         public string GetMessage()
         {
             CloudQueueMessage queueMessage = _queue.GetMessage();
