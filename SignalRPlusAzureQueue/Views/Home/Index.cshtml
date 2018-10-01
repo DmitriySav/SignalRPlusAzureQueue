@@ -27,8 +27,11 @@
             // Start the connection.
             $.connection.hub.start().done(function () {
                    // Call the Send method on the hub.
-                messager.server.start();
-
+                messager.server.start().done(function(auth) {
+                    if (!auth) { alert("User is anonymous"); }
+                    if (auth) { alert("User is authenticated"); }
+                });
+                
                 // Clear text box and reset focus for next comment.
             });
             

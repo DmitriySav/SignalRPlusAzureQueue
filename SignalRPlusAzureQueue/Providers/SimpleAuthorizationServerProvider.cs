@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.Owin.Security.OAuth;
 using SignalRPlusAzureQueue.Interfaces;
-using SignalRPlusAzureQueue.Models;
-using SignalRPlusAzureQueue.Sevices;
+
 
 namespace SignalRPlusAzureQueue.Providers
 {
@@ -33,8 +28,8 @@ namespace SignalRPlusAzureQueue.Providers
 
             if (!string.IsNullOrEmpty(context.UserName))
             {
-                var IsAuth = _userService.IsAuthenticate(context.UserName, context.Password);
-                if (IsAuth)
+                var isAuth = _userService.IsAuthenticate(context.UserName, context.Password);
+                if (isAuth)
                 {
                     var identity = new ClaimsIdentity(context.Options.AuthenticationType);
                     identity.AddClaim(new Claim("Name", context.UserName));
