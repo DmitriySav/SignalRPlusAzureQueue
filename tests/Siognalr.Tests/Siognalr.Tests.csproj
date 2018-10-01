@@ -90,6 +90,7 @@
     <Compile Include="MessageHubTests.cs" />
     <Compile Include="QueueReaderTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="UserServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -37,7 +37,7 @@ namespace Siognalr.Tests
         }
 
         [Test]
-        public void GetMessage_WhenCalled_IvokeEventCall_MessageIsHello()
+        public void GetMessage_WhenCalled_InvokeEventCall_MessageIsHello()
         {
             //arrange
             _queueService.Setup(x => x.GetMessage()).Returns("Hello");
