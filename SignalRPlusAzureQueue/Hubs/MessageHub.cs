@@ -34,10 +34,15 @@ namespace SignalRPlusAzureQueue.Hubs
                 Groups.Add(Context.ConnectionId, "anonymous");
         }
 
-        public void Start()
+        /// <summary>
+        /// Method run timer in messageService, begin recieve messages
+        /// </summary>
+        /// <returns>bool value True if authenticated, False if not authenticated</returns>
+        public bool Start()
         {
              _messageService.Start();
 
+            return Context.User.Identity.IsAuthenticated;
         }
 
 
