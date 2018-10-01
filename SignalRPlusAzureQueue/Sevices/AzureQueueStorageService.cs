@@ -1,9 +1,13 @@
-﻿using Microsoft.WindowsAzure.Storage;
+﻿using System;
+using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Queue;
 using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Sevices
 {
+    /// <summary>
+    /// Implement IAzureQueueStorageService service for control azure queue
+    /// </summary>
     public class AzureQueueStorageService : IAzureQueueStorageService
     {
         private readonly IAzureStorageConfig _azureStorageConfig;
@@ -31,8 +35,16 @@ namespace SignalRPlusAzureQueue.Sevices
         ///  /// <exception cref="Microsoft.WindowsAzure.Storage.StorageException">Thrown when queue not connected and cannot 
         /// fetches the queue's attributes.</exception>
         public int QueueCount()
-        {           
-            _queue.FetchAttributes();
+        {
+            try
+            {
+                _queue.FetchAttributes();
+            }
+            catch (StorageException)
+            {
+                return 0;
+            }
+            
             var count = _queue.ApproximateMessageCount;
             return count.GetValueOrDefault();           
         }

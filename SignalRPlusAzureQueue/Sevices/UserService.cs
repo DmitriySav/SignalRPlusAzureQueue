@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using System.ComponentModel.DataAnnotations;
 using SignalRPlusAzureQueue.Interfaces;
 using SignalRPlusAzureQueue.Models;
 
 namespace SignalRPlusAzureQueue.Sevices
 {
-    public class UserService:IUserService
+    /// <summary>
+    /// Service for user management
+    /// </summary>
+    public class UserService : IUserService
     {
         public static List<UserModel> Users;
 
@@ -16,7 +19,7 @@ namespace SignalRPlusAzureQueue.Sevices
             Users = new List<UserModel>();
             Create(new UserDTO
             {
-                UserName = "name",
+                UserEmail = "name@gmail.com",
                 Password = "password"
             });
         }
@@ -24,44 +27,49 @@ namespace SignalRPlusAzureQueue.Sevices
         /// <summary>
         /// Method check user's credentials
         /// </summary>
-        /// <param name="userName"> User name string</param>
+        /// <param name="userEmail"> User email string</param>
         /// <param name="password"> User's password</param>
         /// <returns>bool value, true if user is authenticated</returns>
-        public bool IsAuthenticate(string userName, string password)
+        public bool IsAuthenticate(string userEmail, string password)
         {
-            var user = Users.SingleOrDefault(x => x.UserName == userName);
-            if (user == null)
+            if (IsValidEmail(userEmail))
             {
-               return false;
+                var user = Users.SingleOrDefault(x => x.UserEmail == userEmail);
+                if (user == null)
+                {
+                    return false;
+                }
+                bool result = VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt);
+                return result;
             }
-            bool result = VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt);
-            return result;
-            
+
+            return false;
         }
 
         /// <summary>
         /// Create new user with hashing password
         /// </summary>
-        /// <param name="userDTO">user DTO model</param>
-        public void Create(UserDTO userDTO)
+        /// <param name="userDto">user DTO model</param>
+        public void Create(UserDTO userDto)
         {
-            byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(userDTO.Password, out passwordHash, out passwordSalt);
-            UserModel user = new UserModel()
+            if (!IsValidEmail(userDto.UserEmail))
             {
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                UserName = userDTO.UserName
-            };
-            Users.Add(user);
+                throw new Exception("Invalid Email address");
+            }
+
+            byte[] passwordHash, passwordSalt;
+                CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
+                UserModel user = new UserModel()
+                {
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+                    UserEmail = userDto.UserEmail
+                };
+                Users.Add(user);
+            
         }
 
-        /// <summary>
-        /// Hashing password
-        /// </summary>
-        /// <param name="password"></param>
-        /// <param name="passwordHash"></param>
-        /// <param name="passwordSalt"></param>
+        
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
@@ -73,20 +81,12 @@ namespace SignalRPlusAzureQueue.Sevices
                 passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             }
         }
-        /// <summary>
-        /// Verify passing password and stored
-        /// </summary>
-        /// <param name="password"></param>
-        /// <param name="storedHash"></param>
-        /// <param name="storedSalt"></param>
-        /// <returns></returns>
+        
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (password == null) throw new ArgumentNullException("password");
             if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException("Value cannot be empty or whitespace only string.", "password");
-            if (storedHash.Length != 64) throw new ArgumentException("Invalid length of password hash (64 bytes expected).", "passwordHash");
-            if (storedSalt.Length != 128) throw new ArgumentException("Invalid length of password salt (128 bytes expected).", "passwordHash");
-
+           
             using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
             {
                 var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
@@ -97,6 +97,16 @@ namespace SignalRPlusAzureQueue.Sevices
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Check if email valid
+        /// </summary>
+        /// <param name="source">pass user email</param>
+        /// <returns>bool value</returns>
+        public bool IsValidEmail(string source)
+        {
+            return new EmailAddressAttribute().IsValid(source);
         }
     }
 }

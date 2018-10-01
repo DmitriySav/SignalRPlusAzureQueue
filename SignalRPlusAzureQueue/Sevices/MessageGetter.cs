@@ -5,6 +5,9 @@ using SignalRPlusAzureQueue.Interfaces;
 
 namespace SignalRPlusAzureQueue.Sevices
 {
+    /// <summary>
+    /// Message broadcasting sender
+    /// </summary>
     public class MessageGetter:IMessageService
     {
 

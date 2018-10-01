@@ -2,6 +2,9 @@
 
 namespace SignalRPlusAzureQueue.Readers
 {
+    /// <summary>
+    /// Queue reader work with azure storage service
+    /// </summary>
     public class QueueReader:IQueueReader
     {
         private IAzureQueueStorageService _azureQueueStorageService;
@@ -14,6 +17,9 @@ namespace SignalRPlusAzureQueue.Readers
             
         }
 
+        /// <summary>
+        /// Event OnGetMessage
+        /// </summary>
         public event ReaderEventHandler OnGetMessage;
 
         event ReaderEventHandler IQueueReader.OnGetMessage
@@ -22,12 +28,19 @@ namespace SignalRPlusAzureQueue.Readers
             remove { OnGetMessage -= value; }
         }
 
-        
+        /// <summary>
+        /// Get number of items in queue
+        /// </summary>
+        /// <returns>int number</returns>
         public int Count()
         {
             return _azureQueueStorageService.QueueCount();
         }
 
+        /// <summary>
+        /// Get message from queue
+        /// Invoke OnGetMessage event
+        /// </summary>
         public void GetMessage()
         {
             var message = _azureQueueStorageService.GetMessage();
