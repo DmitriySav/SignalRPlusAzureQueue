@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.ComponentModel.DataAnnotations;
+using System.Data.Entity;
 using SignalRPlusAzureQueue.Interfaces;
 using SignalRPlusAzureQueue.Models;
 
@@ -12,16 +13,9 @@ namespace SignalRPlusAzureQueue.Sevices
     /// </summary>
     public class UserService : IUserService
     {
-        public static List<UserModel> Users;
-
         public UserService()
         {
-            Users = new List<UserModel>();
-            Create(new UserDTO
-            {
-                UserEmail = "name@gmail.com",
-                Password = "password"
-            });
+ 
         }
 
         /// <summary>
@@ -30,11 +24,11 @@ namespace SignalRPlusAzureQueue.Sevices
         /// <param name="userEmail"> User email string</param>
         /// <param name="password"> User's password</param>
         /// <returns>bool value, true if user is authenticated</returns>
-        public bool IsAuthenticate(string userEmail, string password)
+        public bool HasAuthenticate(string userEmail, string password)
         {
             if (IsValidEmail(userEmail))
             {
-                var user = Users.SingleOrDefault(x => x.UserEmail == userEmail);
+                var user = UserContext.Users.SingleOrDefault(x => x.UserEmail == userEmail.ToLower());
                 if (user == null)
                 {
                     return false;
@@ -44,6 +38,12 @@ namespace SignalRPlusAzureQueue.Sevices
             }
 
             return false;
+        }
+
+        public UserModel GetUser(string userEmail)
+        {
+            var user = UserContext.Users.SingleOrDefault(x => x.UserEmail == userEmail.ToLower());
+            return user;
         }
 
         /// <summary>
@@ -61,12 +61,14 @@ namespace SignalRPlusAzureQueue.Sevices
                 CreatePasswordHash(userDto.Password, out passwordHash, out passwordSalt);
                 UserModel user = new UserModel()
                 {
+                    UserGuid = Guid.NewGuid(),
                     PasswordHash = passwordHash,
                     PasswordSalt = passwordSalt,
-                    UserEmail = userDto.UserEmail
+                    UserEmail = userDto.UserEmail.ToLower(),
+                    Roles = userDto.Roles
                 };
-                Users.Add(user);
-            
+            UserContext.Users.Add(user);
+
         }
 
         
@@ -106,7 +108,7 @@ namespace SignalRPlusAzureQueue.Sevices
         /// <returns>bool value</returns>
         public bool IsValidEmail(string source)
         {
-            return new EmailAddressAttribute().IsValid(source);
+            return new EmailAddressAttribute().IsValid(source.ToLower());
         }
     }
 }

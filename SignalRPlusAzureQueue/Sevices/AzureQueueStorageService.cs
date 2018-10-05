@@ -13,6 +13,8 @@ namespace SignalRPlusAzureQueue.Sevices
         private readonly IAzureStorageConfig _azureStorageConfig;
         private CloudQueue _queue;
 
+
+
         public AzureQueueStorageService(IAzureStorageConfig azureStorageConfig)
         {
             _azureStorageConfig = azureStorageConfig;
@@ -55,6 +57,10 @@ namespace SignalRPlusAzureQueue.Sevices
         public string GetMessage()
         {
             CloudQueueMessage queueMessage = _queue.GetMessage();
+            if (queueMessage == null)
+            {
+               return String.Empty;
+            }
             _queue.DeleteMessage(queueMessage);
             return queueMessage.AsString;
         }

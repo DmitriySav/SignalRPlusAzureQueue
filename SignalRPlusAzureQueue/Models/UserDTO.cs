@@ -10,5 +10,7 @@ namespace SignalRPlusAzureQueue.Models
         public string UserEmail { get; set; }
         public string Password { get; set; }
 
+        public virtual List<Role> Roles { get; set; }
+
     }
 }

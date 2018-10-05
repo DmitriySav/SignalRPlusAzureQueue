@@ -24,25 +24,19 @@ namespace SignalRPlusAzureQueue.DependencyConteiners
                 .PropertiesAutowired();
 
             builder.RegisterType<UserService>()
-                .As<IUserService>();
-
-            builder.RegisterType<AzureStorageConfig>()
-                .As<IAzureStorageConfig>();
-
-            builder.RegisterType<QueueReader>()
-                .As<IQueueReader>();
+                .As<IUserService>(); 
 
             builder.RegisterType<AzureQueueStorageService>()
                 .As<IAzureQueueStorageService>();
 
-            builder.Register(c=>c.Resolve<IConnectionManager>().GetHubContext<MessageHub>())
-                .Named<IHubContext>("MessageHub");
+            //builder.Register(c=>c.Resolve<IConnectionManager>().GetHubContext<MessageHub>())
+            //    .Named<IHubContext>("MessageHub");
 
-            builder.RegisterType<MessageGetter>()
-                .As<IMessageService>()
-                .SingleInstance()
-                .WithParameter(new ResolvedParameter((pi, ctx) => pi.ParameterType == typeof(IHubContext),
-                    (pi, ctx) => ctx.ResolveNamed<IHubContext>("MessageHub")));
+            //builder.RegisterType<MessageGetter>()
+            //    .As<IMessageService>()
+            //    .SingleInstance()
+            //    .WithParameter(new ResolvedParameter((pi, ctx) => pi.ParameterType == typeof(IHubContext),
+            //        (pi, ctx) => ctx.ResolveNamed<IHubContext>("MessageHub")));
 
             Container = builder.Build();
         }

@@ -1,5 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.WebPages;
 using Microsoft.AspNet.SignalR;
+using Microsoft.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.OAuth;
 using SignalRPlusAzureQueue.Interfaces;
 
 
@@ -9,12 +15,12 @@ namespace SignalRPlusAzureQueue.Hubs
     public class MessageHub : Hub
     {
 
-        private readonly IMessageService _messageService;
+        //private readonly IMessageService _messageService;
 
-        public MessageHub(IMessageService messageService)
-        {
-            _messageService = messageService;
-        }
+        //public MessageHub(/*IMessageService messageService*/)
+        //{
+        //    //_messageService = messageService;
+        //}
         /// <summary>
         /// Method invoke on signalr client connection and assign user to group "authenticated or anonymous"
         /// </summary>
@@ -40,8 +46,19 @@ namespace SignalRPlusAzureQueue.Hubs
         /// <returns>bool value True if authenticated, False if not authenticated</returns>
         public bool Start()
         {
-             _messageService.Start();
+           var token = Context.Request.Headers["Authorization"];
+            if (!token.IsEmpty())
+            {
+                var identity = Context.User.Identity as ClaimsIdentity;
+                var check = identity.FindFirst("password").Value;
+            }
 
+           
+
+           // _messageService.Start();
+
+
+            
             return Context.User.Identity.IsAuthenticated;
         }
 

@@ -15,6 +15,9 @@ namespace SignalRPlusAzureQueue.Interfaces
         /// <param name="userName"> User name string</param>
         /// <param name="password"> User's password</param>
         /// <returns>bool value, true if user is authenticated</returns>
-        bool IsAuthenticate(string userName, string password);
+        bool HasAuthenticate(string userEmail, string password);
+
+        UserModel GetUser(string userEmail);
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Web;
 using Microsoft.AspNet.SignalR;
 using SignalRPlusAzureQueue.Interfaces;
 
@@ -43,10 +44,8 @@ namespace SignalRPlusAzureQueue.Sevices
         /// <param name="state">An object containing information to be used by the callback method, or null.</param>
         private void BeginGetMessages(object state)
         {
-            if (_reader.Count() > 0)
-            {
-                _reader.GetMessage();
-            }
+           _reader.GetMessage();
+            
 
         }
         /// <summary>

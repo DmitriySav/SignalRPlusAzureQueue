@@ -18,10 +18,7 @@ namespace SignalRPlusAzureQueue
             //var container = new AutofacContainer().Container;
             //GlobalHost.DependencyResolver = new AutofacDependencyResolver(container);
 
-            AreaRegistration.RegisterAllAreas();
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
-            RouteConfig.RegisterRoutes(RouteTable.Routes);
-            BundleConfig.RegisterBundles(BundleTable.Bundles);
+
         }
     }
 }
