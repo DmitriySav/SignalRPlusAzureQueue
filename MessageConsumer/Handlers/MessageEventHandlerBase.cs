@@ -8,12 +8,10 @@ namespace MessageConsumer.Handlers
 {
     public abstract class MessageEventHandlerBase
     {
-        private readonly IAzureStorageProvider _azureStorage;
+
         protected MessageEventHandlerBase(IAzureStorageProvider azureStorage)
         {
-            _azureStorage = azureStorage;
-            EventRegister();
-            
+            azureStorage.OnGetStringMessage += ParseEvent;
         }
 
         public delegate void EventMessageHandler<in T>(T obj);
@@ -25,28 +23,28 @@ namespace MessageConsumer.Handlers
 
         protected virtual void EventRegister()
         {
-            _azureStorage.OnGetStringMessage += ParseEvent;
+
         }
 
         protected virtual void ParseEvent(object sender, string message)
         {
 
-            var (messageType, messageBody) = MessageJsonSerializer.ParseMessageContext(message);
-            if (messageType == MessageEnum.UserMessage)
+            var messageContext = MessageJsonSerializer.ParseMessageContext(message);
+            if (messageContext.messageType == MessageEnum.UserMessage)
             {
-                var userMessage = JsonConvert.DeserializeObject<UserMessage>(messageBody);
+                var userMessage = JsonConvert.DeserializeObject<UserMessage>(messageContext.messageBody);
                 OnGetUserMessage?.Invoke(userMessage);
             }
 
-            if (messageType == MessageEnum.UmpireMessage)
+            if (messageContext.messageType == MessageEnum.UmpireMessage)
             {
-                var umpireMessage = JsonConvert.DeserializeObject<UmpireMessage>(messageBody);
+                var umpireMessage = JsonConvert.DeserializeObject<UmpireMessage>(messageContext.messageBody);
                 OnGetUmpireMessage?.Invoke(umpireMessage);
             }
 
-            if (messageType == MessageEnum.CoachMessage)
+            if (messageContext.messageType == MessageEnum.CoachMessage)
             {
-                var coachMessage = JsonConvert.DeserializeObject<CoachMessage>(messageBody);
+                var coachMessage = JsonConvert.DeserializeObject<CoachMessage>(messageContext.messageBody);
                 OnGetCoachMessage?.Invoke(coachMessage);
             }
 
