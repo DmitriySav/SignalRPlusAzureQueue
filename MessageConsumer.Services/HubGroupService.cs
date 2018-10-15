@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using MessageConsumer.Services.Interfaces;
 using MessageConsumer.Entities;
+using MessageConsumer.Services.Interfaces;
 
-namespace MessageConsumer.Infrastructure.Business
+namespace MessageConsumer.Services
 {
     
 

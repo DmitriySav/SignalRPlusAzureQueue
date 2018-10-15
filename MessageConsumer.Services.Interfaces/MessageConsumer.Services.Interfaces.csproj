@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MiddlewareMessageLib">
+      <HintPath>..\..\EventCreator\AzureStorageApi\bin\Debug\MiddlewareMessageLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>

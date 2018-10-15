@@ -165,9 +165,10 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="AutofacModules\AzureProviderModule.cs" />
+    <Compile Include="AutofacModules\MessageConsumerModule.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DependencyConteiners\AutofacContainer.cs" />
+    <Compile Include="Handlers\MessageEventHandlerBase.cs" />
     <Compile Include="Hubs\MessageHub.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\SimpleAuthorizationServerProvider.cs" />
@@ -235,10 +236,6 @@
       <Project>{3d5d367f-88f2-42a0-a6fa-61c7353d043b}</Project>
       <Name>MessageConsumer.Entities</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MessageConsumer.Infrastructure.Business\MessageConsumer.Infrastructure.Business.csproj">
-      <Project>{54943268-f8ed-497a-8d57-d737b1e50698}</Project>
-      <Name>MessageConsumer.Infrastructure.Business</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MessageConsumer.Infrastructure.Data\MessageConsumer.Infrastructure.Data.csproj">
       <Project>{9ffa5a2a-4b06-43b5-bf55-607608c3a39c}</Project>
       <Name>MessageConsumer.Infrastructure.Data</Name>
@@ -247,10 +244,17 @@
       <Project>{9917ac35-63a7-427d-b71e-efd0f0b81731}</Project>
       <Name>MessageConsumer.Services.Interfaces</Name>
     </ProjectReference>
+    <ProjectReference Include="..\MessageConsumer.Services\MessageConsumer.Services.csproj">
+      <Project>{667aef50-1691-4dff-8e33-fd949c2a34a0}</Project>
+      <Name>MessageConsumer.Services</Name>
+    </ProjectReference>
     <ProjectReference Include="..\MessageConsumer.Utils\MessageConsumer.Utils.csproj">
       <Project>{634965d5-a375-45d4-8db1-941bc4692200}</Project>
       <Name>MessageConsumer.Utils</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -4,22 +4,20 @@ using System.Threading.Tasks;
 using MessageConsumer.Handlers;
 using MessageConsumer.Services.Interfaces;
 using Microsoft.AspNet.SignalR;
-using MessageConsumer.Entities;
-using MessageConsumer.Infrastructure.Business;
 using MiddlewareMessageLib.Messages;
 
 namespace MessageConsumer.Hubs
 {
     public class MessageHub : Hub
     {
-        private MessageEventHandler _eventHandler;
+        private MessageEventHandlerBase _eventHandler;
         private IMessageService _messageService;
         private readonly IHubGroupManager<string> _groupManager;
         private static bool _eventSign;
 
 
         public MessageHub(IMessageService messageService,
-                        MessageEventHandler eventHandler,
+                        MessageEventHandlerBase eventHandler,
                         IHubGroupManager<string> groupManager)
         {
             _messageService = messageService;
@@ -66,16 +64,13 @@ namespace MessageConsumer.Hubs
                 if (Context.User.Identity is ClaimsIdentity identity)
                 {
                     var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+                    var userId = identity.Claims.SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
                     foreach (var role in roles)
-                    {
-                        var userId = identity.Claims
-                            .SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-
+                    {         
                         _groupManager.AddToGroup(role.Value, userId, Context.ConnectionId);
                     }
                 }
             }
-
             else
                 _groupManager.AddToGroup("Anonymous", "User", Context.ConnectionId);
         }
@@ -87,19 +82,14 @@ namespace MessageConsumer.Hubs
             {
                 if (Context.User.Identity is ClaimsIdentity identity)
                 {
-                    var roles = identity.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
-                    foreach (var role in roles)
-                    {
-                        var userId = identity.Claims
+                       var userId = identity.Claims
                             .SingleOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-                        _groupManager.RemoveFromGroup(userId, Context.ConnectionId);
-                    }
+                        _groupManager.RemoveFromGroup(userId, Context.ConnectionId);                  
                 }
             }
-            else
-            {
+            else           
                 _groupManager.RemoveFromGroup("User", Context.ConnectionId);
-            }
+            
         }
 
         /// <summary>
@@ -114,37 +104,29 @@ namespace MessageConsumer.Hubs
 
         private void UserSender(UserMessage userMessage)
         {
-            var users = _groupManager.GetUsersFromGroup("User");
-            foreach (var user in users)
-            {
-                Clients.Client(user.ConnectionIds[0]).broadcastMessage($"UserId - {userMessage.FacilityId}\n"+
+            var usersConnections = _groupManager.GetConnectionIdFromGroup("User").ToList();
+            Clients.Clients(usersConnections).broadcastMessage($"UserId - {userMessage.FacilityId}\n"+
                                                                      $"User name - {userMessage.FacilityName}\n"+
                                                                      $"User action - {userMessage.Action}");
 
-            }
+            
         }
         private void CoachSender(CoachMessage coachMessage)
         {
-            var coaches = _groupManager.GetUsersFromGroup("Coach");
-            foreach (var coach in coaches)
-            {
-                Clients.Client(coach.ConnectionIds[0])
+            var coachConnections = _groupManager.GetConnectionIdFromGroup("Coach").ToList();
+            Clients.Clients(coachConnections)
                     .broadcastMessage($"Coach MessageId - {coachMessage.UserId}\n"+
                                       $"Coach Activity - {coachMessage.UserActivity}\n"+
-                                      $"Coach message created at - {coachMessage.CreatedAtUtc}");
-
-            }
+                                      $"Coach message created at - {coachMessage.CreatedAtUtc}");           
         }
         private void UmpireSender(UmpireMessage umpireMessage)
         {
-            var umpires = _groupManager.GetUsersFromGroup("Umpire");
-            foreach (var umpire in umpires)
-            {
-                Clients.Clients(umpire.ConnectionIds)
+            var umpiresConnections = _groupManager.GetConnectionIdFromGroup("Umpire").ToList();
+            Clients.Clients(umpiresConnections)
                     .broadcastMessage($"Umpire name -{umpireMessage.FacilityName}\n "+
                                         $"Umpire activity - {umpireMessage.Activity}\n"+
                                         $"Umpire event date - {umpireMessage.CreatedAtUtc}");
-            }
+            
         }
 
     }

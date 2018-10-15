@@ -8,13 +8,13 @@ namespace MessageConsumer.Tests
     [TestFixture]
     public class MessageHubTests
     {
-        private Mock<IMessageService> _messageServiceMock;
-        private MessageHub _messageHub;
+        private readonly Mock<IMessageService> _messageServiceMock;
+       // private MessageHub _messageHub;
 
         public MessageHubTests()
         {
             _messageServiceMock = new Mock<IMessageService>();
-        }      
+        }
 
         //[Test]
         //public void HubMockingTest()
@@ -45,11 +45,11 @@ namespace MessageConsumer.Tests
         //    _messageHub.Start();
 
         //    //assert
-        //    _messageServiceMock.Verify(m=>m.Start());
+        //    _messageServiceMock.Verify(m => m.Start());
 
         //}
 
-        
+
 
     }
 }

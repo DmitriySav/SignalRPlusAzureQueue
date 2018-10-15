@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MessageConsumer.Domain.Interfaces;
-using MessageConsumer.Infrastructure.Business;
+using MessageConsumer.Services;
 using MessageConsumer.Infrastructure.Data.DtoModels;
 using MessageConsumer.Util;
 using MessageConsumer.Utils.Interfaces;
@@ -63,18 +63,18 @@ namespace MessageConsumer.Tests
         }
 
         [Test]
-        public void hasAuthenticate_whenCalledWithCorrectParameters_ReturnTrue()
+        public void HasAuthenticate_whenCalledWithCorrectParameters_ReturnTrue()
         {
             IPasswordUtil passwordUtil = new PasswordUtil();
             var userService = new UserService(repo.Object, passwordUtil);
-            var pass = passwordUtil.CreatePasswordHash("password");
+            var (passwordHash, passwordSalt) = passwordUtil.CreatePasswordHash("password");
             repo.Setup(g => g.List()).Returns(new List<User>
             {
                 new User
                 {
                     UserEmail = "name@gmail.com",
-                    PasswordSalt = pass.passwordSalt,
-                    PasswordHash = pass.passwordHash
+                    PasswordSalt = passwordSalt,
+                    PasswordHash = passwordHash
 
                 }
             });
@@ -85,18 +85,18 @@ namespace MessageConsumer.Tests
         }
 
         [Test]
-        public void hasAuthenticate_whenCalledWithLetterFromOtherCulture_ReturnFalse()
+        public void HasAuthenticate_whenCalledWithLetterFromOtherCulture_ReturnFalse()
         {
             IPasswordUtil passwordUtil = new PasswordUtil();
             var userService = new UserService(repo.Object, passwordUtil);
-            var pass = passwordUtil.CreatePasswordHash("Password2");
+            var (passwordHash, passwordSalt) = passwordUtil.CreatePasswordHash("Password2");
             repo.Setup(g => g.List()).Returns(new List<User>
             {
                 new User
                 {
                     UserEmail = "testemail@mail.com",
-                    PasswordSalt = pass.passwordSalt,
-                    PasswordHash = pass.passwordHash
+                    PasswordSalt = passwordSalt,
+                    PasswordHash = passwordHash
 
                 }
             });
@@ -107,18 +107,18 @@ namespace MessageConsumer.Tests
         }
         [Test]
 
-        public void hasAuthenticate_whenCalledWithInvalidEmail_ReturnFalse()
+        public void HasAuthenticate_whenCalledWithInvalidEmail_ReturnFalse()
         {
             IPasswordUtil passwordUtil = new PasswordUtil();
             var userService = new UserService(repo.Object, passwordUtil);
-            var pass = passwordUtil.CreatePasswordHash("Password2");
+            var (passwordHash, passwordSalt) = passwordUtil.CreatePasswordHash("Password2");
             repo.Setup(g => g.List()).Returns(new List<User>
             {
                 new User
                 {
                     UserEmail = "testem*@mail.com",
-                    PasswordSalt = pass.passwordSalt,
-                    PasswordHash = pass.passwordHash
+                    PasswordSalt = passwordSalt,
+                    PasswordHash = passwordHash
 
                 }
             });
@@ -133,14 +133,14 @@ namespace MessageConsumer.Tests
         {
             IPasswordUtil passwordUtil = new PasswordUtil();
             var userService = new UserService(repo.Object, passwordUtil);
-            var pass = passwordUtil.CreatePasswordHash("Password2");
+            var (passwordHash, passwordSalt) = passwordUtil.CreatePasswordHash("Password2");
             repo.Setup(g => g.List()).Returns(new List<User>
             {
                 new User
                 {
                     UserEmail = "testemail@mail.com",
-                    PasswordSalt = pass.passwordSalt,
-                    PasswordHash = pass.passwordHash
+                    PasswordSalt = passwordSalt,
+                    PasswordHash = passwordHash
 
                 }
             });
@@ -188,14 +188,14 @@ namespace MessageConsumer.Tests
         {
             IPasswordUtil passwordUtil = new PasswordUtil();
             var userService = new UserService(repo.Object, passwordUtil);
-            var pass = passwordUtil.CreatePasswordHash("Password2");
+            var (passwordHash, passwordSalt) = passwordUtil.CreatePasswordHash("Password2");
             repo.Setup(g => g.List()).Returns(new List<User>
             {
                 new User
                 {
                     UserEmail = "testemail@mail.com",
-                    PasswordSalt = pass.passwordSalt,
-                    PasswordHash = pass.passwordHash
+                    PasswordSalt = passwordSalt,
+                    PasswordHash = passwordHash
 
                 }
             });
@@ -209,14 +209,14 @@ namespace MessageConsumer.Tests
         {
             IPasswordUtil passwordUtil = new PasswordUtil();
             var userService = new UserService(repo.Object, passwordUtil);
-            var pass = passwordUtil.CreatePasswordHash("Password2");
+            var (passwordHash, passwordSalt) = passwordUtil.CreatePasswordHash("Password2");
             repo.Setup(g => g.List()).Returns(new List<User>
             {
                 new User
                 {
                     UserEmail = "testemail@mail.com",
-                    PasswordSalt = pass.passwordSalt,
-                    PasswordHash = pass.passwordHash
+                    PasswordSalt = passwordSalt,
+                    PasswordHash = passwordHash
 
                 }
             });

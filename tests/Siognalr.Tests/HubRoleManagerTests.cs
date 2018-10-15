@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading;
-using MessageConsumer.Infrastructure.Business;
+using MessageConsumer.Services;
 using NUnit.Framework;
-using Assert = Microsoft.VisualStudio.TestTools.UnitTesting.Assert;
+
 
 namespace MessageConsumer.Tests
 {
@@ -20,8 +19,7 @@ namespace MessageConsumer.Tests
             roleManager.AddToGroup("User", "User1", "thirdConnection");
 
             Assert.AreEqual(1, roleManager.GetUsersFromGroup("User").Count());
-            Assert.AreEqual(3, roleManager
-                .GetUsersFromGroup("User")
+            Assert.AreEqual(3, roleManager.GetUsersFromGroup("User")
                 .FirstOrDefault().ConnectionIds.Count);
         }
 
@@ -108,15 +106,14 @@ namespace MessageConsumer.Tests
         {
             var roleManager = new HubGroupManager<string>();
             Thread t1 = new Thread(() => AddInThread(roleManager, 0, 1000));
-            Thread t2 = new Thread(() => RemoveInThread(roleManager, 500, 1000));
+            Thread t2 = new Thread(() => RemoveInThread(roleManager, 0, 500));
             t1.Start();
             t2.Start();
-            t2.Join();
             t1.Join();
+            t2.Join();
 
             var users = roleManager.GetUsersFromGroup("User");
-            Assert.AreEqual(500, users.Count());
-
+            Assert.That(users.Count(), Is.LessThan(1000));
         }
 
 
@@ -135,6 +132,48 @@ namespace MessageConsumer.Tests
                 roleManager.RemoveFromGroup($"User{i}", "Connection");
             }
         }
+        private void GetUserGroupsByIdInThread(HubGroupManager<string> roleManager, int from, int to)
+        {
+            for (int i = from; i < to; i++)
+            {
+                roleManager.GetUserGroupsById($"User{i}");
+            }
+        }
+        private void GetUserGroupsByConnectionIdInThread(HubGroupManager<string> roleManager, int from, int to)
+        {
+            for (int i = from; i < to; i++)
+            {
+                roleManager.GetUserGroupsByConnectionId("Connection");
+            }
+        }
+        private void GetUsersFromGroupInThread(HubGroupManager<string> roleManager, int from, int to)
+        {
+            for (int i = from; i < to; i++)
+            {
+                roleManager.GetUsersFromGroup("User");
+            }
+        }
 
+
+        [Test]
+        public void MultiThreadTest_AllAction_RunAllMethods()
+        {
+            var roleManager = new HubGroupManager<string>();
+            Thread t1 = new Thread(() => AddInThread(roleManager, 0, 1000));
+            Thread t2 = new Thread(() => RemoveInThread(roleManager, 0, 500));
+            Thread t3 = new Thread(()=> GetUserGroupsByIdInThread(roleManager,0,722));
+            Thread t4 = new Thread(()=> GetUserGroupsByConnectionIdInThread(roleManager,0,500));
+            Thread t5 = new Thread(()=> GetUsersFromGroupInThread(roleManager, 0 , 432));
+            t1.Start();
+            t2.Start();
+            t3.Start();
+            t4.Start();
+            t5.Start();
+            t1.Join();
+            t2.Join();
+            t3.Join();
+            t4.Join();
+            t5.Join();
+        }
     }
 }

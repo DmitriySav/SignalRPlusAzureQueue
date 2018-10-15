@@ -17,6 +17,7 @@ namespace MessageConsumer.Providers
         public override async Task ValidateClientAuthentication(OAuthValidateClientAuthenticationContext context)
         {
            context.Validated();
+            await base.ValidateClientAuthentication(context);
         }
 
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
@@ -38,6 +39,8 @@ namespace MessageConsumer.Providers
                     }
                     context.Validated(identity);
                 }
+
+                await base.GrantResourceOwnerCredentials(context);
                 //context.Validated(IsAuth);
             }
         }

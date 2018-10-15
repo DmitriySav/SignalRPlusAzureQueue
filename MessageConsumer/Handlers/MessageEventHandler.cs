@@ -9,42 +9,16 @@ namespace MessageConsumer.Handlers
     /// <summary>
     /// Queue reader work with azure storage service
     /// </summary>
-    public class MessageEventHandler
+    public class MessageEventHandler : MessageEventHandlerBase
     {
-        public delegate void EventMessageHandler<in T>(T obj);
+        //public override event EventMessageHandler<UserMessage> OnGetUserMessage;
+        //public override event EventMessageHandler<CoachMessage> OnGetCoachMessage;
+        //public override event EventMessageHandler<UmpireMessage> OnGetUmpireMessage;
 
-        public event EventMessageHandler<UserMessage> OnGetUserMessage;
-        public event EventMessageHandler<CoachMessage> OnGetCoachMessage;
-        public event EventMessageHandler<UmpireMessage> OnGetUmpireMessage;
-
-        public MessageEventHandler(IAzureStorageProvider azureStorage)
+        public MessageEventHandler(IAzureStorageProvider azureStorage) : base(azureStorage)
         {
-            azureStorage.OnGetStringMessage += ParseEvent;
         }
 
-        protected virtual void ParseEvent(object sender, string message)
-        {
-
-            var messageContext = MessageJsonSerializer.ParseMessageContext(message);
-            if (messageContext.messageType == MessageEnum.UserMessage)
-            {
-                var userMessage = JsonConvert.DeserializeObject<UserMessage>(messageContext.messageBody);
-                OnGetUserMessage?.Invoke(userMessage);
-            }
-
-            if (messageContext.messageType == MessageEnum.UmpireMessage)
-            {
-                var umpireMessage = JsonConvert.DeserializeObject<UmpireMessage>(messageContext.messageBody);
-                OnGetUmpireMessage?.Invoke(umpireMessage);
-            }
-
-            if (messageContext.messageType == MessageEnum.CoachMessage)
-            {
-                var coachMessage = JsonConvert.DeserializeObject<CoachMessage>(messageContext.messageBody);
-                OnGetCoachMessage?.Invoke(coachMessage);
-            }
-
-
-        }
+        
     }
 }
