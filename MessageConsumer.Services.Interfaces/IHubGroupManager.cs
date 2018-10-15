@@ -19,7 +19,7 @@ namespace MessageConsumer.Services.Interfaces
         /// </summary>
         /// <param name="connectionId">User connection identifier</param>
         /// <returns>Enumerable of roles</returns>
-        IEnumerable<T> GetUserGroupsByConnectionId(string connectionId);
+        IEnumerable<T> GetUserGroupByConnectionId(string connectionId);
 
 
         /// <summary>

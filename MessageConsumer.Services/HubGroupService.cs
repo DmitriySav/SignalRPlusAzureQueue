@@ -49,7 +49,7 @@ namespace MessageConsumer.Services
         /// </summary>
         /// <param name="connectionId">User connection identifier</param>
         /// <returns>Enumerable of roles</returns>
-        public IEnumerable<T> GetUserGroupsByConnectionId(string connectionId)
+        public IEnumerable<T> GetUserGroupByConnectionId(string connectionId)
         {
             lock (RolesGroup)
             {

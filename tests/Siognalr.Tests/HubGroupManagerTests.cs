@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace MessageConsumer.Tests
 {
     [TestFixture]
-    public class HubRoleManagerTests
+    public class HubGroupManagerTests
     {
         [Test]
         public void Add_WhenCalled_CountUsersWithThreeConnectionId()
@@ -143,7 +143,7 @@ namespace MessageConsumer.Tests
         {
             for (int i = from; i < to; i++)
             {
-                roleManager.GetUserGroupsByConnectionId("Connection");
+                roleManager.GetUserGroupByConnectionId("Connection");
             }
         }
         private void GetUsersFromGroupInThread(HubGroupManager<string> roleManager, int from, int to)
@@ -174,6 +174,51 @@ namespace MessageConsumer.Tests
             t3.Join();
             t4.Join();
             t5.Join();
+        }
+
+        [Test]
+        public void GetUserGroupsByConnectionId_WhenCalled_ReturnEnumerableOfUsersGroup()
+        {
+            var roleManager = new HubGroupManager<string>();
+
+            roleManager.AddToGroup("User", "User1", "firstConnection");
+            roleManager.AddToGroup("Admin", "User1", "firstConnection");
+            roleManager.AddToGroup("Coach", "User2", "secondConnection");
+            roleManager.AddToGroup("User", "User2", "secondConnection");
+
+            var groups = roleManager.GetUserGroupByConnectionId("firstConnection");
+
+            Assert.IsTrue(groups.Contains("Admin")&&groups.Contains("User"));
+        }
+
+        [Test]
+        public void GetUserGroupById_WhenCalled_ReturnEnumerableOfUsersGroup()
+        {
+            var roleManager = new HubGroupManager<string>();
+
+            roleManager.AddToGroup("User", "User1", "firstConnection");
+            roleManager.AddToGroup("Admin", "User1", "firstConnection");
+            roleManager.AddToGroup("Coach", "User2", "secondConnection");
+            roleManager.AddToGroup("User", "User2", "secondConnection");
+
+            var groups = roleManager.GetUserGroupsById("User2");
+
+            Assert.IsTrue(groups.Contains("Coach") && groups.Contains("User"));
+        }
+
+        [Test]
+        public void GetUserFromGroup_WhenCalled_ReturnEnumerableOfUsers()
+        {
+            var roleManager = new HubGroupManager<string>();
+
+            roleManager.AddToGroup("User", "User1", "firstConnection");
+            roleManager.AddToGroup("Admin", "User1", "firstConnection");
+            roleManager.AddToGroup("Coach", "User2", "secondConnection");
+            roleManager.AddToGroup("User", "User2", "secondConnection");
+
+            var groups = roleManager.GetUsersFromGroup("User");
+
+            Assert.IsTrue(groups.Count()==2);
         }
     }
 }

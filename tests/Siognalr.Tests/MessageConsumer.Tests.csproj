@@ -86,7 +86,7 @@
     <Compile Include="Interfaces\IClientContract.cs" />
     <Compile Include="MessageHubTests.cs" />
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="HubRoleManagerTests.cs" />
+    <Compile Include="HubGroupManagerTests.cs" />
     <Compile Include="UserServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
