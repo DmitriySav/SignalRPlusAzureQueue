@@ -21,12 +21,7 @@ namespace MessageConsumer.Handlers
         public virtual event EventMessageHandler<UmpireMessage> OnGetUmpireMessage;
 
 
-        protected virtual void EventRegister()
-        {
-
-        }
-
-        protected virtual void ParseEvent(object sender, string message)
+       protected virtual void ParseEvent(object sender, string message)
         {
 
             var messageContext = MessageJsonSerializer.ParseMessageContext(message);
