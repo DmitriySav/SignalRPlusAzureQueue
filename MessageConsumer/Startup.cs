@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
@@ -6,8 +7,11 @@ using Autofac;
 using Autofac.Integration.SignalR;
 using MessageConsumer;
 using MessageConsumer.DependencyConteiners;
+using MessageConsumer.Providers;
 using Microsoft.AspNet.SignalR;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
+using Microsoft.Owin.Security.Infrastructure;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
 
@@ -51,12 +55,16 @@ namespace MessageConsumer
                 AllowInsecureHttp = true,
                 TokenEndpointPath = new PathString("/token"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(1),
-                Provider = container.BeginLifetimeScope().Resolve<IOAuthAuthorizationServerProvider>() 
+                Provider = container.BeginLifetimeScope().Resolve<IOAuthAuthorizationServerProvider>()
+                
             };
 
             // Token Generation
             app.UseOAuthAuthorizationServer(oAuthServerOptions);
-            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions());
+            app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
+            {
+                Provider = new BearerProvider()
+            });
 
 
         }

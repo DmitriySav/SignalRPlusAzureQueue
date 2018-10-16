@@ -30,7 +30,6 @@ namespace MessageConsumer.Hubs
         /// <returns></returns>
         public override Task OnConnected()
         {
-            Clients.Caller.broadcastMessage("hello");
             AssignToSecurityGroup();
             if (!_eventSign)
             {
@@ -58,7 +57,7 @@ namespace MessageConsumer.Hubs
 
         private void AssignToSecurityGroup()
         {
-
+            var context = Context.User;
             if (Context.User.Identity.IsAuthenticated)
             {
                 if (Context.User.Identity is ClaimsIdentity identity)
@@ -100,6 +99,11 @@ namespace MessageConsumer.Hubs
         {
             _messageService.Start();
             return Context.User.Identity.IsAuthenticated;
+        }
+
+        public void sendMessage()
+        {
+            Clients.Caller.broadcastMessage("pls login"); 
         }
 
         private void UserSender(UserMessage userMessage)

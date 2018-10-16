@@ -1,15 +1,11 @@
 using System.Collections.Generic;
 using MessageConsumer.Domain.Core;
-using MessageConsumer.Infrastructure.Data.DtoModels;
-using MessageConsumer.Services.Interfaces;
 using MessageConsumer.Util;
 
 namespace MessageConsumer.Infrastructure.Data.Migrations
 {
     using System;
-    using System.Data.Entity;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<MessageConsumer.Infrastructure.Data.UserContext>
     {

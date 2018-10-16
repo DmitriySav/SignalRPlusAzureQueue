@@ -222,5 +222,23 @@ namespace MessageConsumer.Tests
             Assert.IsEmpty(test);
             Assert.IsTrue(groups.Count()==2);
         }
+
+        [Test]
+        public void GetConnectionIdFromGroup_WhenCalled_ReturnEnumerableOfConnectionId()
+        {
+            var roleManager = new HubGroupManager<string>();
+
+            roleManager.AddToGroup("User", "User1", "firstConnection");
+            roleManager.AddToGroup("Admin", "User1", "firstConnection");
+            roleManager.AddToGroup("Coach", "User2", "secondConnection");
+            roleManager.AddToGroup("User", "User2", "secondConnection");
+            roleManager.AddToGroup("User", "User3", "NewConnection");
+
+            var groups = roleManager.GetConnectionIdFromGroup("User");
+
+            Assert.IsTrue(groups.Contains("NewConnection")&&groups.Contains("firstConnection"));
+        }
+
+
     }
 }

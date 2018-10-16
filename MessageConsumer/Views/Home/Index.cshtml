@@ -4,34 +4,81 @@
 
 
 <div id="container">
+    <!-- Trigger the modal with a button -->
+    <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Login</button>
 
+    <!-- Modal -->
+    <div id="myModal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="loginform">
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input id="email" type="text" class="form-control" name="email" placeholder="Email">
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                            <input id="password" type="password" class="form-control" name="password" placeholder="Password">
+                        </div>
+                        <button type="button" id="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
 <script type="text/javascript">
-        $(function () {
-            // Declare a proxy to reference the hub.
-            var messager = $.connection.messageHub;
+    $(function () {
 
-            // Create a function that the hub can call to broadcast messages.
-            messager.client.message = function (message) {
-                // Html encode display name and message.
-                var encodedMsg = $('<div />').text(message).html();
-                // Add the message to the page.
-                $('#container').append('<p>' + encodedMsg + '</p>');
-            };
-            messager.client.broadcastMessage = function (message) {
-                // Html encode display name and message.
-                var encodedMsg = $('<div />').text(message).html();
-                // Add the message to the page.
-                $('#container').append('<p>'+ encodedMsg + '</p>');
-            };
-            // Start the connection.
-            $.connection.hub.start().done(function () {
-                   // Call the Send method on the hub.
-                    alert("connected");
-                
-                
-                // Clear text box and reset focus for next comment.
-            });
-            
+        var token;
+        var messager = $.connection.messageHub;
+
+        // Create a function that the hub can call to broadcast messages.
+        messager.client.message = function (message) {
+            // Html encode display name and message.
+            var encodedMsg = $('<div />').text(message).html();
+            // Add the message to the page.
+            $('#container').append('<p>' + encodedMsg + '</p>');
+        };
+        messager.client.broadcastMessage = function (message) {
+            // Html encode display name and message.
+            var encodedMsg = $('<div />').text(message).html();
+            // Add the message to the page.
+            $('#container').append('<p>' + encodedMsg + '</p>');
+        };
+        $.connection.hub.start().done(function () {
+            messager.server.sendMessage();
         });
+        $("#submit").click(function () {
+
+
+            $.post('http://localhost:54859/token',
+                {
+                    'grant_type': 'password',
+                    'username': $("#email").val(),
+                    'Password': $("#password").val()
+                },
+                function(data) {
+                    $.connection.hub.stop();
+                    token = data.access_token;
+                    $("#myModal").modal("hide");
+
+                    $.connection.hub.qs = { "Authorization": token };
+                    $.connection.hub.start().done(function() {
+                        messager.server.start();
+
+                    });
+                }).fail(function() { alert("invalid credentials"); });
+
+        });
+    });
+
 </script>
