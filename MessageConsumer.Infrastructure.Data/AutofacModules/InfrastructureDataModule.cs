@@ -1,7 +1,6 @@
 ﻿using Autofac;
 using MessageConsumer.Domain.Core;
 using MessageConsumer.Domain.Interfaces;
-using MessageConsumer.Repositories;
 
 namespace MessageConsumer.Infrastructure.Data.AutofacModules
 {

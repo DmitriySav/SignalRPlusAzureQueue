@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using MessageConsumer.Domain.Core;
 using MessageConsumer.Domain.Interfaces;
-using MessageConsumer.Infrastructure.Data;
 
-namespace MessageConsumer.Repositories
+namespace MessageConsumer.Infrastructure.Data
 {
     public class UserRepository:IRepository<User>
     {

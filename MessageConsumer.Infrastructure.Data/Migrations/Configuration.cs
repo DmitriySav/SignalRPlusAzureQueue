@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using MessageConsumer.Domain.Core;
 using MessageConsumer.Infrastructure.Data.DtoModels;
-using MessageConsumer.Repositories;
 using MessageConsumer.Services.Interfaces;
 using MessageConsumer.Util;
 

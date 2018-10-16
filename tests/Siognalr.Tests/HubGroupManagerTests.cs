@@ -217,7 +217,9 @@ namespace MessageConsumer.Tests
             roleManager.AddToGroup("User", "User2", "secondConnection");
 
             var groups = roleManager.GetUsersFromGroup("User");
+            var test = roleManager.GetUsersFromGroup("NotExist");
 
+            Assert.IsEmpty(test);
             Assert.IsTrue(groups.Count()==2);
         }
     }
