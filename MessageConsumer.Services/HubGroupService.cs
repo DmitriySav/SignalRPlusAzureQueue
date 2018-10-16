@@ -97,7 +97,7 @@ namespace MessageConsumer.Services
         }
 
 
-        /// <summary>
+        /// <summary> 
         /// Get all connection identifier in group
         /// </summary>
         /// <param name="group">name of group</param>

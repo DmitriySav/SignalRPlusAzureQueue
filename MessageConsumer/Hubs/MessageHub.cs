@@ -106,6 +106,12 @@ namespace MessageConsumer.Hubs
             Clients.Caller.broadcastMessage("pls login"); 
         }
 
+        public void SendMessageToGroup(string group, string message)
+        {
+            var users = _groupManager.GetConnectionIdFromGroup(group).ToList();
+            Clients.Clients(users).broadcastMessage(message);
+        }
+
         private void UserSender(UserMessage userMessage)
         {
             var usersConnections = _groupManager.GetConnectionIdFromGroup("User").ToList();

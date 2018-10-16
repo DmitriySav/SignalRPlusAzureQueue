@@ -63,7 +63,7 @@ namespace MessageConsumer
             app.UseOAuthAuthorizationServer(oAuthServerOptions);
             app.UseOAuthBearerAuthentication(new OAuthBearerAuthenticationOptions()
             {
-                Provider = new BearerProvider()
+                Provider = new BearerProvider("Authorization")
             });
 
 
