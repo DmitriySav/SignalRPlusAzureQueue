@@ -18,7 +18,7 @@ namespace MessageConsumer.Tests
             roleManager.AddToGroup("User", "User1", "secondConnection");
             roleManager.AddToGroup("User", "User1", "thirdConnection");
 
-            Assert.AreEqual(1, roleManager.GetUsersFromGroup("User").Count());
+            Assert.AreEqual(1, roleManager?.GetUsersFromGroup("User").Count());
             Assert.AreEqual(3, roleManager.GetUsersFromGroup("User")
                 .FirstOrDefault().ConnectionIds.Count);
         }
@@ -61,7 +61,7 @@ namespace MessageConsumer.Tests
             roleManager.RemoveFromGroup("User1", "thirdConnection");
             roleManager.RemoveFromGroup("User2", "secondConnection");
 
-            var result = roleManager.RolesGroup.ContainsKey("User");
+            var result = roleManager.IsGroupExist("User");
 
             Assert.IsFalse(result);
         }
@@ -186,7 +186,7 @@ namespace MessageConsumer.Tests
             roleManager.AddToGroup("Coach", "User2", "secondConnection");
             roleManager.AddToGroup("User", "User2", "secondConnection");
 
-            var groups = roleManager.GetUserGroupByConnectionId("firstConnection");
+            var groups = roleManager.GetUserGroupByConnectionId("firstConnection").ToList();
 
             Assert.IsTrue(groups.Contains("Admin")&&groups.Contains("User"));
         }
@@ -201,7 +201,7 @@ namespace MessageConsumer.Tests
             roleManager.AddToGroup("Coach", "User2", "secondConnection");
             roleManager.AddToGroup("User", "User2", "secondConnection");
 
-            var groups = roleManager.GetUserGroupsById("User2");
+            var groups = roleManager.GetUserGroupsById("User2").ToList();
 
             Assert.IsTrue(groups.Contains("Coach") && groups.Contains("User"));
         }
@@ -234,7 +234,7 @@ namespace MessageConsumer.Tests
             roleManager.AddToGroup("User", "User2", "secondConnection");
             roleManager.AddToGroup("User", "User3", "NewConnection");
 
-            var groups = roleManager.GetConnectionIdFromGroup("User");
+            var groups = roleManager.GetConnectionIdFromGroup("User").ToList();
 
             Assert.IsTrue(groups.Contains("NewConnection")&&groups.Contains("firstConnection"));
         }

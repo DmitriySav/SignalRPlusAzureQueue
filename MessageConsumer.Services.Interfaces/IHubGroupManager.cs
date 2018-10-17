@@ -21,7 +21,12 @@ namespace MessageConsumer.Services.Interfaces
         /// <returns>Enumerable of roles</returns>
         IEnumerable<T> GetUserGroupByConnectionId(string connectionId);
 
-
+        /// <summary>
+        /// Check if group is exist
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns>bool value, true if group exist</returns>
+        bool IsGroupExist(T group);
         /// <summary>
         /// Get all connection identifier in group
         /// </summary>

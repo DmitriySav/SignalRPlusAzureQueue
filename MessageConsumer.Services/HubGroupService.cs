@@ -119,6 +119,16 @@ namespace MessageConsumer.Services
         }
 
         /// <summary>
+        /// Check if group is exist
+        /// </summary>
+        /// <param name="group"></param>
+        /// <returns>bool value, true if group exist</returns>
+        public bool IsGroupExist(T group)
+        {
+            return RolesGroup.ContainsKey(group);
+        }
+
+        /// <summary>
         /// Remove user connection from group
         /// </summary>
         /// <param name="userId">User identifier</param>
