@@ -132,50 +132,7 @@ namespace MessageConsumer.Tests
                 roleManager.RemoveFromGroup($"User{i}", "Connection");
             }
         }
-        private void GetUserGroupsByIdInThread(HubGroupManager<string> roleManager, int from, int to)
-        {
-            for (int i = from; i < to; i++)
-            {
-                roleManager.GetUserGroupsById($"User{i}");
-            }
-        }
-        private void GetUserGroupsByConnectionIdInThread(HubGroupManager<string> roleManager, int from, int to)
-        {
-            for (int i = from; i < to; i++)
-            {
-                roleManager.GetUserGroupByConnectionId("Connection");
-            }
-        }
-        private void GetUsersFromGroupInThread(HubGroupManager<string> roleManager, int from, int to)
-        {
-            for (int i = from; i < to; i++)
-            {
-                roleManager.GetUsersFromGroup("User");
-            }
-        }
-
-
-        [Test]
-        public void MultiThreadTest_AllAction_RunAllMethods()
-        {
-            var roleManager = new HubGroupManager<string>();
-            Thread t1 = new Thread(() => AddInThread(roleManager, 0, 1000));
-            Thread t2 = new Thread(() => RemoveInThread(roleManager, 0, 500));
-            Thread t3 = new Thread(()=> GetUserGroupsByIdInThread(roleManager,0,722));
-            Thread t4 = new Thread(()=> GetUserGroupsByConnectionIdInThread(roleManager,0,500));
-            Thread t5 = new Thread(()=> GetUsersFromGroupInThread(roleManager, 0 , 432));
-            t1.Start();
-            t2.Start();
-            t3.Start();
-            t4.Start();
-            t5.Start();
-            t1.Join();
-            t2.Join();
-            t3.Join();
-            t4.Join();
-            t5.Join();
-        }
-
+       
         [Test]
         public void GetUserGroupsByConnectionId_WhenCalled_ReturnEnumerableOfUsersGroup()
         {
