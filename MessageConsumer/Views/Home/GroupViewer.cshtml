@@ -1,0 +1,73 @@
+﻿
+@{
+    ViewBag.Title = "GroupViewer";
+}
+
+<h2>GroupViewer</h2>
+<div>
+    <button id="groupButton">Get Groups</button>
+    <ul id="groups">
+
+    </ul>
+</div>
+<div>
+    <ul>
+        <li id="users"></li>
+    </ul>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        var groupManager = $.connection.groupViewerHub;
+        var groupContainer = $("#groups");
+        var userContainer = $("#users");
+
+        groupManager.client.getGroups = function (groups) {
+            groups=jQuery.parseJSON(groups);
+                
+            groupContainer.html("");
+            for (var k in groups) {
+                if (groups.hasOwnProperty(k)) {
+                    groupContainer.append('<li>' + groups[k] + '</li>');
+                    
+                }
+            }
+            groupContainer.find("li").click(function() {
+                GetUserList(this);
+            });
+        };
+
+        groupManager.client.getUsers = function (users) {
+            // Html encode display name and message.
+            users = jQuery.parseJSON(users);
+            userContainer.html("");
+            for (var user in users) {
+                userContainer.append('<li>' + users[user].UserId + '<span class="close">&times;</span></li>');
+            }
+            userContainer.find(".close").click(function () {
+                var user = $(this.parentNode).text().slice(0, -1);
+                RemoveUser(user);
+            });
+        };
+
+        function GetUserList(group) {
+            groupManager.server.getUsers(group.innerHTML);
+        }
+        
+        function RemoveUser(user) {            
+            groupManager.server.deleteUser(user);
+        }
+
+        
+
+        $("#groupButton").click(function() {
+            groupManager.server.getGroups();
+        });
+
+        $.connection.hub.start().done(function () {
+
+        });
+    });
+
+</script>

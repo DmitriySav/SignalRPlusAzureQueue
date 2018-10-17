@@ -9,6 +9,11 @@ namespace MessageConsumer.Controllers
             return View();
         }
 
-      
+        public ActionResult GroupViewer()
+        {
+            return View();
+        }
+
+
     }
 }

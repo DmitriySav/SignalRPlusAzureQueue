@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MessageConsumer.Entities;
+using MessageConsumer.Entities.Events;
 
 namespace MessageConsumer.Services.Interfaces
 {
     public interface IHubGroupManager<T>
     {
-
+        /// <summary>
+        /// Event that invoked on remove or add user
+        /// </summary>
+        event EventHandler<ManagerEventArgs<T, HubUser>> OnGroupChange;
         /// <summary>
         /// Add user to group
         /// </summary>
@@ -21,6 +26,17 @@ namespace MessageConsumer.Services.Interfaces
         /// <returns>Enumerable of roles</returns>
         IEnumerable<T> GetUserGroupByConnectionId(string connectionId);
 
+        /// <summary>
+        /// Get all hubs user which register in hubManager
+        /// </summary>
+        /// <returns>Enumerable of users</returns>
+        IEnumerable<HubUser> GetAllUsers();
+
+        /// <summary>
+        /// Get all groups saved in manager
+        /// </summary>
+        /// <returns>Enumerable of keys</returns>
+        IEnumerable<T> GetAllGroups();
         /// <summary>
         /// Check if group is exist
         /// </summary>
@@ -53,5 +69,6 @@ namespace MessageConsumer.Services.Interfaces
         /// <param name="userId">User identifier</param>
         /// <param name="connectionId">user connection identifier</param>
         void RemoveFromGroup(string userId, string connectionId);
+        void RemoveFromGroup(string userId);
     }
 }

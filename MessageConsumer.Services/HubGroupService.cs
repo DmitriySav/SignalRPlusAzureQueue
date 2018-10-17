@@ -1,28 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using MessageConsumer.Entities;
+using MessageConsumer.Entities.Enums;
+using MessageConsumer.Entities.Events;
 using MessageConsumer.Services.Interfaces;
 
 namespace MessageConsumer.Services
 {
-    
+
 
     /// <summary>
     /// Class for managing user in HUb
     /// </summary>
     /// <inheritdoc cref="IHubGroupManager{T}"/>
-    public class HubGroupManager<T>:IHubGroupManager<T>
+    public class HubGroupManager<T> : IHubGroupManager<T>
     {
         public Dictionary<T, List<HubUser>> RolesGroup = new Dictionary<T, List<HubUser>>();
         private readonly object _locker = new object();
 
+
+
+        public event EventHandler<ManagerEventArgs<T, HubUser>> OnGroupChange;
+
+
         /// <inheritdoc />
-        /// <summary>
-        /// Add user to group
-        /// </summary>
-        /// <param name="key">Group name</param>
-        /// <param name="userId">User identifier</param>
-        /// <param name="connectionId">User connection identifier</param>
         public void AddToGroup(T key, string userId, string connectionId)
         {
             lock (_locker)
@@ -30,25 +33,27 @@ namespace MessageConsumer.Services
 
                 if (!RolesGroup.ContainsKey(key))
                     RolesGroup.Add(key, new List<HubUser> { new HubUser(userId, connectionId) });
-                
+
                 else if (RolesGroup.ContainsKey(key))
                 {
                     var user = RolesGroup[key].Find(x => x.UserId == userId);
 
                     if (user == null)
-                        RolesGroup[key].Add(new HubUser(userId, connectionId));   
-                    
+                        RolesGroup[key].Add(new HubUser(userId, connectionId));
+
                     user?.ConnectionIds.Add(connectionId);
-                }               
+                }
+
+                OnGroupChange?.Invoke(this, new ManagerEventArgs<T, HubUser>
+                {
+                    Action = ManagerAction.AddItem,
+                    Key = key,
+                    Value = new HubUser(userId, connectionId)
+                });
             }
         }
 
         /// <inheritdoc />
-        /// <summary>
-        /// Get groups of user
-        /// </summary>
-        /// <param name="connectionId">User connection identifier</param>
-        /// <returns>Enumerable of roles</returns>
         public IEnumerable<T> GetUserGroupByConnectionId(string connectionId)
         {
             lock (RolesGroup)
@@ -90,7 +95,7 @@ namespace MessageConsumer.Services
             lock (_locker)
             {
                 if (RolesGroup.ContainsKey(group))
-                    return RolesGroup[group];              
+                    return RolesGroup[group];
             }
 
             return Enumerable.Empty<HubUser>();
@@ -111,7 +116,7 @@ namespace MessageConsumer.Services
                 {
                     foreach (var user in RolesGroup[group])
                     {
-                       connectionIdList.AddRange(user.ConnectionIds);
+                        connectionIdList.AddRange(user.ConnectionIds);
                     }
                 }
                 return connectionIdList;
@@ -125,7 +130,38 @@ namespace MessageConsumer.Services
         /// <returns>bool value, true if group exist</returns>
         public bool IsGroupExist(T group)
         {
-            return RolesGroup.ContainsKey(group);
+            lock (_locker)
+            {
+                return RolesGroup.ContainsKey(@group);
+            }
+        }
+
+        /// <summary>
+        /// Get all hubs user which register in hubManager
+        /// </summary>
+        /// <returns>Enumerable of users</returns>
+        public IEnumerable<HubUser> GetAllUsers()
+        {
+            lock (_locker)
+            {
+                var users = new List<HubUser>();
+                foreach (var group in RolesGroup.Values)
+                {
+                    users.AddRange(group);
+                }
+
+                return users;
+            }
+        }
+
+
+        /// <inheritdoc/>
+        public IEnumerable<T> GetAllGroups()
+        {
+            lock (_locker)
+            {
+                return RolesGroup.Keys;
+            }
         }
 
         /// <summary>
@@ -137,25 +173,56 @@ namespace MessageConsumer.Services
         {
             lock (_locker)
             {
-                //var tempDict = new Dictionary<T, List<HubUser>>(RolesGroup);
-
                 foreach (var item in RolesGroup.ToList())
                 {
-                    var test = RolesGroup[item.Key];
-                    var user = test.Find(x => x.UserId == userId);
-                    //var user = test.FirstOrDefault(x => x.UserId == userId);
+                    var user = RolesGroup[item.Key].Find(x => x.UserId == userId);
 
                     if (user != null)
+                    {
                         if (user.ConnectionIds.Count > 1)
                             user.ConnectionIds.Remove(connectionId);
                         else
-                            RolesGroup[item.Key].Remove(user); 
+                            RolesGroup[item.Key].Remove(user);
+
+                        OnGroupChange?.Invoke(this, new ManagerEventArgs<T, HubUser>
+                        {
+                            Action = ManagerAction.RemoveItem,
+                            Key = item.Key,
+                            Value = user
+                        });
+                    }
+
 
                     if (RolesGroup[item.Key].Count == 0)
                         RolesGroup.Remove(item.Key);
                 }
-                //RolesGroup = RolesGroup;
             }
+        }
+
+        public void RemoveFromGroup(string userId)
+        {
+            lock (_locker)
+            {
+                foreach (var item in RolesGroup.ToList())
+                {
+                    var user = RolesGroup[item.Key].Find(x => x.UserId == userId);
+
+                    if (user != null)
+                    {
+                        RolesGroup[item.Key].Remove(user);
+                        OnGroupChange?.Invoke(this, new ManagerEventArgs<T, HubUser>
+                        {
+                            Action = ManagerAction.RemoveItem,
+                            Key = item.Key,
+                            Value = user
+                        });
+                    }
+
+                    if (RolesGroup[item.Key].Count == 0)
+                        RolesGroup.Remove(item.Key);
+                }
+            }
+
         }
     }
 }

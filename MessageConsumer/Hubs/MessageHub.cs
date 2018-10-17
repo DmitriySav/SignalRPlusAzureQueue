@@ -108,8 +108,8 @@ namespace MessageConsumer.Hubs
 
         public void SendMessageToGroup(string group, string message)
         {
-            var users = _groupManager.GetConnectionIdFromGroup(group).ToList();
-            Clients.Clients(users).broadcastMessage(message);
+            var connectionIds = _groupManager.GetConnectionIdFromGroup(group).ToList();
+            Clients.Clients(connectionIds).broadcastMessage(message);
         }
 
         private void UserSender(UserMessage userMessage)
