@@ -55,7 +55,13 @@ namespace MessageConsumer.Hubs
             GetGroups();
             GetUsers();
         }
-        
+
+        public void DeleteUser(string userId, string group)
+        {
+            _groupManager.RemoveFromGroup(userId);
+            GetUsers(group);
+        }
+
         public void GetUsers(string group)
         {
             var users = _groupManager.GetUsersFromGroup(group);

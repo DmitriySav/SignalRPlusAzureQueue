@@ -22,6 +22,9 @@
         var groupManager = $.connection.groupViewerHub;
         var groupContainer = $("#groups");
         var userContainer = $("#users");
+        var ExistingGroup;
+
+
 
         groupManager.client.getGroups = function (groups) {
             groups=jQuery.parseJSON(groups);
@@ -33,7 +36,8 @@
                     
                 }
             }
-            groupContainer.find("li").click(function() {
+            groupContainer.find("li").click(function () {
+                ExistingGroup = this.innerHTML;
                 GetUserList(this);
             });
         };
@@ -47,7 +51,7 @@
             }
             userContainer.find(".close").click(function () {
                 var user = $(this.parentNode).text().slice(0, -1);
-                RemoveUser(user);
+                RemoveUser(user, ExistingGroup);
             });
         };
 
